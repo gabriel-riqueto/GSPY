@@ -2,28 +2,36 @@
 Gabriel Riqueto RM98685 
 Lucas Vinicius de Almeida Brigida RM99094 
 '''
-
 import json
 import os
 
 def carregar_pacientes():
+    # Verifica se o arquivo 'pacientes.json' existe.
     if os.path.exists('pacientes.json'):
+        # Se existir, carrega os dados do arquivo para a lista de pacientes.
         with open('pacientes.json', 'r') as file:
             pacientes = json.load(file)
         return pacientes
     else:
+        # Caso contrário, retorna uma lista vazia.
         return []
 
 def salvar_pacientes(pacientes):
-    with open('pacientes.json', 'w') as file:
-        json.dump(pacientes, file, indent=2)
+    # Salva a lista de pacientes no arquivo 'pacientes.json',
+    # formatando o conteúdo com indentação para melhor legibilidade em formato JSON.
+    with open('pacientes.json', 'w', encoding="utf-8") as file:
+        json.dump(pacientes, file, indent=2, ensure_ascii=False)
 
 def adicionar_paciente(pacientes):
+    # Gera um novo ID para o paciente com base nos IDs existentes na lista.
     novo_id = obter_novo_id(pacientes)
+    
+    # Solicita informações sobre um novo paciente (nome e anotações) ao usuário.
     nome = input("Digite o nome do paciente: ")
     anotacoes = input("Digite as anotações sobre o paciente: ")
     print("----------")
 
+    # Adiciona o paciente à lista, salva os dados e exibe uma mensagem de sucesso.
     paciente = {
         'id': novo_id,
         'nome': nome,
@@ -36,6 +44,7 @@ def adicionar_paciente(pacientes):
     print("----------")
 
 def obter_novo_id(pacientes):
+    # Calcula o próximo ID disponível para um novo paciente com base nos IDs existentes.
     if not pacientes:
         return "001"
 
@@ -44,6 +53,7 @@ def obter_novo_id(pacientes):
     return f"{novo_id:03d}"
 
 def mostrar_pacientes(pacientes):
+    # Exibe a lista de pacientes, mostrando o ID e o nome de cada um.
     if not pacientes:
         print("Nenhum paciente registrado.")
         print("----------")
@@ -54,10 +64,10 @@ def mostrar_pacientes(pacientes):
             print(f"ID: {paciente['id']}, Nome: {paciente['nome']}")
 
 def mostrar_anotacoes(pacientes, paciente_id=None):
+    # Permite visualizar as anotações de um paciente específico ou de todos os pacientes, conforme a escolha do usuário.
     if not pacientes:
         print("Nenhum paciente registrado.")
         print("----------")
-        
     elif paciente_id is not None and paciente_id != 'T':
         paciente = encontrar_paciente(pacientes, paciente_id)
         if paciente:
@@ -74,8 +84,8 @@ def mostrar_anotacoes(pacientes, paciente_id=None):
             print(f"\nID: {paciente['id']}, Nome: {paciente['nome']}")
             print(paciente['anotacoes'])
 
-
 def modificar_anotacoes(pacientes, paciente_id):
+    # Permite modificar ou adicionar anotações a um paciente existente, dando opções ao usuário.
     paciente = encontrar_paciente(pacientes, paciente_id)
     if paciente:
         print("----------")
@@ -83,7 +93,7 @@ def modificar_anotacoes(pacientes, paciente_id):
         print(paciente['anotacoes'])
         print("----------")
 
-        opcao = input("Pressione A para adicionar anotações ou M para modificar as anotaçoes do zero: ").upper()
+        opcao = input("Pressione A para adicionar anotações ou M para modificar as anotações do zero: ").upper()
 
         if opcao == 'A':
             novas_anotacoes = input("Digite as novas anotações: ")
@@ -101,7 +111,9 @@ def modificar_anotacoes(pacientes, paciente_id):
     else:
         print("Paciente não encontrado.")
         print("----------")
+
 def excluir_paciente(pacientes, paciente_id):
+    # Remove um paciente da lista com base no ID fornecido pelo usuário.
     paciente = encontrar_paciente(pacientes, paciente_id)
     if paciente:
         pacientes.remove(paciente)
@@ -113,12 +125,14 @@ def excluir_paciente(pacientes, paciente_id):
         print("----------")
 
 def encontrar_paciente(pacientes, paciente_id):
+    # Busca um paciente na lista com base no ID fornecido.
     for paciente in pacientes:
         if paciente['id'] == paciente_id:
             return paciente
     return None
 
 def main():
+    # Inicia o programa, carregando os pacientes existentes.
     pacientes = carregar_pacientes()
 
     while True:
